@@ -18,6 +18,8 @@ import {
 const Costumizer = () => {
   const snap = useSnapshot(state);
 
+  const container = document.querySelector('.editortabs-container');
+
   const [file, setFile] = useState('');
   const [prompt, setPrompt] = useState('');
   const [generatingImg, setGeneratingImg] = useState(false);
@@ -47,7 +49,6 @@ const Costumizer = () => {
   };
 
   useEffect(() => {
-    const container = document.querySelector('.editortabs-container');
     const handleOutsideClick = (e) => {
       if (container)
         if (!container.contains(e.target)) {
@@ -59,7 +60,7 @@ const Costumizer = () => {
     return () => {
       document.removeEventListener('click', handleOutsideClick);
     };
-  }, []);
+  }, [container]);
 
   const handleSubmit = async (type) => {
     if (!prompt) return alert('Please enter a prompt');
