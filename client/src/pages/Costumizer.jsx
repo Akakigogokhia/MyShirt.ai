@@ -4,7 +4,6 @@ import { useSnapshot } from 'valtio';
 
 import config from '../config/config';
 import state from '../store';
-import { download } from '../assets';
 import { downloadCanvasToImage, reader } from '../config/helpers';
 import { EditorTabs, FilterTabs, DecalTypes } from '../config/constants';
 import { fadeAnimation, slideAnimation } from '../config/motion';
@@ -46,6 +45,21 @@ const Costumizer = () => {
         );
     }
   };
+
+  useEffect(() => {
+    const container = document.querySelector('.editortabs-container');
+    const handleOutsideClick = (e) => {
+      if (container)
+        if (!container.contains(e.target)) {
+          setActiveEditorTab('');
+        }
+    };
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   const handleSubmit = async (type) => {
     if (!prompt) return alert('Please enter a prompt');
@@ -103,10 +117,11 @@ const Costumizer = () => {
   };
 
   const readFile = (type) => {
-    reader(file).then((result) => {
-      handleDecals(type, result);
-      setActiveEditorTab('');
-    });
+    if (file)
+      reader(file).then((result) => {
+        handleDecals(type, result);
+        setActiveEditorTab('');
+      });
   };
 
   return (
@@ -154,9 +169,11 @@ const Costumizer = () => {
                 tab={tab}
                 isFilterTab
                 isActiveTab={activeFilterTab[tab.name]}
-                handleClick={() => {
-                  handleActiveFilterTab(tab.name);
-                }}
+                handleClick={
+                  tab.name !== 'download'
+                    ? () => handleActiveFilterTab(tab.name)
+                    : downloadCanvasToImage
+                }
               />
             ))}
           </motion.div>

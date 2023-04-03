@@ -1,10 +1,11 @@
 export const downloadCanvasToImage = () => {
   const canvas = document.querySelector('canvas');
+  console.log(canvas);
   const dataURL = canvas.toDataURL();
   const link = document.createElement('a');
 
   link.href = dataURL;
-  link.download = 'canvas.png';
+  link.download = 'shirt.png';
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
